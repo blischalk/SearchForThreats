@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1537673465 source:/home/frankg/Documents/cpp_projects/SearchForThreats/main.cpp
+	<iostream>
+	<string>
+	"cxxopts.hpp"
+
+1507138090 /home/frankg/Documents/cpp_projects/SearchForThreats/optionparser.h
+	<intrin.h>
+
+1537673424 /home/frankg/Documents/cpp_projects/SearchForThreats/cxxopts.hpp
+	<cstring>
+	<cctype>
+	<exception>
+	<iostream>
+	<map>
+	<memory>
+	<regex>
+	<sstream>
+	<string>
+	<unordered_map>
+	<unordered_set>
+	<vector>
+	<optional>
+	<unicode/unistr.h>
+
