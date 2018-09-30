@@ -3,6 +3,8 @@
 #include "expression_search.hpp"
 #include "yaml_config.hpp"
 
+const std::vector<std::string> supported_languages = {"ruby"};
+
 int main(int argc, char* argv[])
 {
   cxxopts::Options options("sft [path...] [language ruby|python]",
@@ -19,14 +21,18 @@ int main(int argc, char* argv[])
       exit(0);
     }
 
-  std::string start_dir = argv[1];
-  std::string language  = argv[2];
-
-  if (language != "ruby")
+  if (!std::any_of(supported_languages.begin(),
+                   supported_languages.end(),
+                   [argv](std::string str){return argv[2] == str;}) )
     {
-      std::cout << "Only ruby is currently supported" << std::endl;
+      std::cout << argv[2]
+                << " is not currently supported"
+                << std::endl;
       exit(1);
     }
+
+  std::string start_dir = argv[1];
+  std::string language  = argv[2];
 
   std::vector<std::string> expressions;
   YamlConfig::Config cfg = YamlConfig::Config(YamlConfig::DEFAULT_CONFIG);
