@@ -3,7 +3,8 @@
 #include "expression_search.hpp"
 #include "yaml_config.hpp"
 
-const std::vector<std::string> supported_languages = {"ruby"};
+const std::vector<std::string> supported_languages =
+  {"ruby", "c", "cpp"};
 
 int main(int argc, char* argv[])
 {

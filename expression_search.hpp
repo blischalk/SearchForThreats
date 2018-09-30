@@ -15,5 +15,7 @@ public:
 private:
   std::map<std::string, std::vector<std::string>> file_extensions =
     {{"ruby",{".rb",
-              ".erb"}}};
+              ".erb"}},
+     {"c", {".c"}},
+     {"cpp", {".cpp"}}};
 };
