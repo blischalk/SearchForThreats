@@ -1,3 +1,4 @@
 ruby:
   - "\\.where"
   - "File\\.read"
+  - "html_safe"

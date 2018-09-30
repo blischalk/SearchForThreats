@@ -9,11 +9,7 @@ int main(int argc, char* argv[])
                            "Look for threats in an application");
 
   options.add_options()
-    ("h,help", "Show help")
-    ("a,add", "Add threat")
-    ("r,remove", "Remove threat")
-    ("v,vuln-type", "Vulnerability type",
-     cxxopts::value<std::vector<std::string>>(), "VULNTYPE");
+    ("h,help", "Show help") ;
 
   auto result = options.parse(argc, argv);
 
@@ -23,23 +19,22 @@ int main(int argc, char* argv[])
       exit(0);
     }
 
-  if (result.count("v"))
+  std::string start_dir = argv[1];
+  std::string language  = argv[2];
+
+  if (language != "ruby")
     {
-      auto& vv = result["v"].as<std::vector<std::string>>();
-      std::cout << "Vulnerability types:" << std::endl;
-      for (const auto& v : vv)
-        {
-          std::cout << v << std::endl;
-        }
+      std::cout << "Only ruby is currently supported" << std::endl;
+      exit(1);
     }
 
   std::vector<std::string> expressions;
   YamlConfig::Config cfg = YamlConfig::Config(YamlConfig::DEFAULT_CONFIG);
-  expressions = cfg.lookup_expressions_for("ruby");
+  expressions = cfg.lookup_expressions_for(language);
 
   if (expressions.size() > 0)
     {
-      ExpressionSearch es = ExpressionSearch(expressions);
+      ExpressionSearch es = ExpressionSearch(start_dir, language, expressions);
       es.search();
     }
 
