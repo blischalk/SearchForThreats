@@ -13,4 +13,14 @@ following code paths to determine if user proceeds without any sanitization.
 This tool does not try to be smart but rather to identify the areas of the
 codebase where manual review may be beneficial.
 
+## Features To Implement
 
+- Show context in match output
+- Report to CSV
+- Ignore file
+- Vulnerability type search
+- Interactive mode
+  - Mark as ignore
+    - Store hash of line and un-ignore when line changes
+  - Mark as issue
+  - Add note
