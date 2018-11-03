@@ -6,6 +6,7 @@
 #include <regex>
 #include <string>
 #include "expression_search.hpp"
+#include "match.hpp"
 
 using namespace boost::filesystem;
 
@@ -39,11 +40,13 @@ void ExpressionSearch::search(void)
 {
   std::ifstream fileText;
   std::string line;
+  std::string file_name;
 
   recursive_directory_iterator end;
   for (recursive_directory_iterator it(start_dir); it != end; ++it) {
     std::string extension = boost::filesystem::extension(*it);
     if (extension_for_lang(language, extension)) {
+      file_name = it->path().string();
       std::cout << "\033[1;35mSearching file: \033[0m"
                 << it->path().string()
                 << "\n"
@@ -69,18 +72,9 @@ void ExpressionSearch::search(void)
               std::regex e(expressions[i]);
               bool match = regex_search(mem_file.at(line_number), e);
               if (match) {
-                std::cout << "\033[1;31mFound a match on line: \033[0m"
-                          << line_number
-                          << std::endl;
-                std::cout << "\033[1;32mMatching expression: \033[0m"
-                          << expressions[i]
-                          << std::endl;
-                std::cout << "\033[1;33mLine contents are: \033[0m"
-                          << mem_file.at(line_number)
-                          << "\n"
-                          << std::endl;
-                print_with_context(mem_file, line_number, 3, 3);
-                std::cout << std::endl;
+                MatchContext c = MatchContext(mem_file, line_number, 3, 3);
+                Match m   = Match(line_number, file_name, expressions[i], mem_file.at(line_number), c);
+                print_match(m);
               }
             }
         }
@@ -88,23 +82,21 @@ void ExpressionSearch::search(void)
   }
 }
 
-void ExpressionSearch::print_with_context(std::vector<std::string> mem_file,
-    int line_number,
-    int preroll,
-    int postroll)
+void ExpressionSearch::print_match(Match m)
 {
-  std::size_t length = mem_file.size();
-  int proposed_start = line_number - preroll;
-  int proposed_end   = line_number + postroll;
-  int start          = proposed_start < 0 ? 0 : proposed_start;
-  int end            = proposed_end > (int)(length - 1) ? (int)(length - 1) : proposed_end;
-
-  while (start <= end)
-  {
-    std::cout << "line " << (start + 1) << ": ";
-    std::cout << mem_file.at(start)
-              << std::endl;
-    start++;
-  }
-
+  std::cout << "\033[1;31mFound a match on line: \033[0m"
+    << m.line_number
+    << std::endl;
+  std::cout << "\033[1;32mMatching expression: \033[0m" << std::endl;
+    for (auto line : m.context.lines)
+    {
+      std::cout << line;
+      std::cout << std::endl;
+    }
+    std::cout << std::endl;
+  std::cout << "\033[1;33mLine contents are: \033[0m"
+    << m.match
+    << "\n"
+    << std::endl;
+  std::cout << std::endl;
 }

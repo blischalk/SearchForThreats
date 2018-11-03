@@ -15,7 +15,7 @@ codebase where manual review may be beneficial.
 
 ## Features To Implement
 
-- Show context in match output
+- (x) Show context in match output - Implemented
 - Report to CSV
 - Ignore file
 - Vulnerability type search
