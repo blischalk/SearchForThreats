@@ -11,6 +11,10 @@ public:
                    std::vector<std::string> expressions);
   bool extension_for_lang(std::string lang, std::string ext);
   void search(void);
+  void print_with_context(std::vector<std::string> memfile,
+                          int line_number,
+                          int preroll,
+                          int postroll);
 
 private:
   std::map<std::string, std::vector<std::string>> file_extensions =

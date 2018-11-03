@@ -49,33 +49,62 @@ void ExpressionSearch::search(void)
                 << "\n"
                 << std::endl;
       fileText.open(it->path().string());
+      std::vector<std::string> mem_file;
+
       if (fileText.good())
         {
-          int line_number = 0;
           while (getline(fileText, line))
             {
-              for (std::size_t i=0; i < expressions.size(); i++)
-                {
-
-                  std::regex e(expressions[i]);
-                  bool match = regex_search(line, e);
-                  if (match) {
-                    std::cout << "\033[1;31mFound a match on line: \033[0m"
-                              << line_number
-                              << std::endl;
-                    std::cout << "\033[1;32mMatching expression: \033[0m"
-                              << expressions[i]
-                              << std::endl;
-                    std::cout << "\033[1;33mLine contents are: \033[0m"
-                              << "'" << line << "'"
-                              << "\n"
-                              << std::endl;
-                  }
-                }
-              line_number++;
+              mem_file.push_back(line);
             }
         }
+
       fileText.close();
+
+      for (std::size_t line_number = 0; line_number < mem_file.size(); line_number++)
+        {
+          for (std::size_t i=0; i < expressions.size(); i++)
+            {
+
+              std::regex e(expressions[i]);
+              bool match = regex_search(mem_file.at(line_number), e);
+              if (match) {
+                std::cout << "\033[1;31mFound a match on line: \033[0m"
+                          << line_number
+                          << std::endl;
+                std::cout << "\033[1;32mMatching expression: \033[0m"
+                          << expressions[i]
+                          << std::endl;
+                std::cout << "\033[1;33mLine contents are: \033[0m"
+                          << mem_file.at(line_number)
+                          << "\n"
+                          << std::endl;
+                print_with_context(mem_file, line_number, 3, 3);
+                std::cout << std::endl;
+              }
+            }
+        }
     }
   }
+}
+
+void ExpressionSearch::print_with_context(std::vector<std::string> mem_file,
+    int line_number,
+    int preroll,
+    int postroll)
+{
+  std::size_t length = mem_file.size();
+  int proposed_start = line_number - preroll;
+  int proposed_end   = line_number + postroll;
+  int start          = proposed_start < 0 ? 0 : proposed_start;
+  int end            = proposed_end > (int)(length - 1) ? (int)(length - 1) : proposed_end;
+
+  while (start <= end)
+  {
+    std::cout << "line " << (start + 1) << ": ";
+    std::cout << mem_file.at(start)
+              << std::endl;
+    start++;
+  }
+
 }
