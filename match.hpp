@@ -8,13 +8,11 @@ class Match
 {
   public:
     int line_number;
-    std::string file;
     std::string expression;
     std::string match;
     MatchContext context;
 
     Match(int line_number,
-        std::string file, 
         std::string expression,
         std::string match,
         MatchContext context);

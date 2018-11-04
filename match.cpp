@@ -4,8 +4,10 @@
 #include "match.hpp"
 
 Match::Match(int line_number,
-             std::string file, 
              std::string expression,
              std::string match,
              MatchContext context)
-  : line_number(line_number), match(match), context(context) {};
+  : line_number(line_number),
+    expression(expression),
+    match(match),
+    context(context) {};

@@ -7,6 +7,7 @@
 #include <string>
 #include "expression_search.hpp"
 #include "match.hpp"
+#include "types.hpp"
 
 using namespace boost::filesystem;
 
@@ -38,31 +39,37 @@ bool ExpressionSearch::extension_for_lang(std::string lang,
 
 void ExpressionSearch::search(void)
 {
-  std::ifstream fileText;
+  std::ifstream file_text;
   std::string line;
   std::string file_name;
+  FileMatches file_matches;
 
   recursive_directory_iterator end;
   for (recursive_directory_iterator it(start_dir); it != end; ++it) {
     std::string extension = boost::filesystem::extension(*it);
+    file_name = it->path().string();
+
     if (extension_for_lang(language, extension)) {
-      file_name = it->path().string();
       std::cout << "\033[1;35mSearching file: \033[0m"
-                << it->path().string()
+                << file_name
                 << "\n"
                 << std::endl;
-      fileText.open(it->path().string());
-      std::vector<std::string> mem_file;
 
-      if (fileText.good())
+      file_text.open(it->path().string());
+
+      std::vector<std::string> mem_file;
+      std::vector<Match> file_match_collection;
+      file_matches[file_name] = file_match_collection;
+
+      if (file_text.good())
         {
-          while (getline(fileText, line))
+          while (getline(file_text, line))
             {
               mem_file.push_back(line);
             }
         }
 
-      fileText.close();
+      file_text.close();
 
       for (std::size_t line_number = 0; line_number < mem_file.size(); line_number++)
         {
@@ -73,30 +80,51 @@ void ExpressionSearch::search(void)
               bool match = regex_search(mem_file.at(line_number), e);
               if (match) {
                 MatchContext c = MatchContext(mem_file, line_number, 3, 3);
-                Match m   = Match(line_number, file_name, expressions[i], mem_file.at(line_number), c);
-                print_match(m);
+                Match m   = Match(line_number, expressions[i], mem_file.at(line_number), c);
+                file_matches[file_name].push_back(m);
               }
             }
         }
+
     }
   }
+
+  print_match(file_matches);
 }
 
-void ExpressionSearch::print_match(Match m)
+void ExpressionSearch::print_match(FileMatches fm)
 {
-  std::cout << "\033[1;31mFound a match on line: \033[0m"
-    << m.line_number
-    << std::endl;
-  std::cout << "\033[1;32mMatching expression: \033[0m" << std::endl;
-    for (auto line : m.context.lines)
+
+  for (auto const &ent : fm)
+  {
+    std::cout << "\033[1;31mResults for File: \033[0m"
+      << ent.first
+      << std::endl;
+
+    for (auto m : ent.second)
     {
-      std::cout << line;
+      std::cout << "\033[1;31mFound a match on line: \033[0m"
+        << m.line_number
+        << std::endl;
+
+      std::cout << "\033[1;32mMatching expression: \033[0m"
+        << m.expression
+        << std::endl;
+
+      for (auto line : m.context.lines)
+      {
+        std::cout << line
+          << std::endl;
+      }
+
+      std::cout << std::endl;
+
+      std::cout << "\033[1;33mLine contents are: \033[0m"
+        << m.match
+        << "\n"
+        << std::endl;
+
       std::cout << std::endl;
     }
-    std::cout << std::endl;
-  std::cout << "\033[1;33mLine contents are: \033[0m"
-    << m.match
-    << "\n"
-    << std::endl;
-  std::cout << std::endl;
+  }
 }

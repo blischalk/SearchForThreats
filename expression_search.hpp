@@ -1,5 +1,6 @@
 #include <string>
 #include "match.hpp"
+#include "types.hpp"
 
 class ExpressionSearch
 {
@@ -12,7 +13,7 @@ public:
                    std::vector<std::string> expressions);
   bool extension_for_lang(std::string lang, std::string ext);
   void search(void);
-  void print_match(Match m);
+  void print_match(FileMatches fm);
 
 private:
   std::map<std::string, std::vector<std::string>> file_extensions =
