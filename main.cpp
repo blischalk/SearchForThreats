@@ -58,6 +58,7 @@ int main(int argc, char* argv[])
     ExpressionSearch es = ExpressionSearch(start_dir, language, expressions);
     FileMatches fm = es.search();
     fm.print();
+    fm.print_to_csv();
   }
 
   return 0;
