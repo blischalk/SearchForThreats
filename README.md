@@ -1,6 +1,6 @@
 # Search For Threats
 
-This application is intended too be a static code analysis tool to aid in code
+This application is intended to be a static code analysis tool to aid in code
 reviews. The goal is to detect places where vulnerabilities such as
 injection, XSS, directory traversal, etc. occur. Another goal is to be language
 agnostic so that this tool can be utilized for reviewing applications from any
