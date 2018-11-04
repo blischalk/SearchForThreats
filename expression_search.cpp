@@ -6,11 +6,10 @@
 #include <regex>
 #include <string>
 #include "expression_search.hpp"
+#include "file_matches.hpp"
 #include "match.hpp"
-#include "types.hpp"
 
 using namespace boost::filesystem;
-
 
 ExpressionSearch::ExpressionSearch(std::string start_dir,
                                    std::string language,
@@ -37,12 +36,12 @@ bool ExpressionSearch::extension_for_lang(std::string lang,
   return false;
 }
 
-void ExpressionSearch::search(void)
+FileMatches ExpressionSearch::search()
 {
   std::ifstream file_text;
   std::string line;
   std::string file_name;
-  FileMatches file_matches;
+  std::map<std::string, std::vector<Match>> file_matches;
 
   recursive_directory_iterator end;
   for (recursive_directory_iterator it(start_dir); it != end; ++it) {
@@ -88,43 +87,6 @@ void ExpressionSearch::search(void)
 
     }
   }
-
-  print_match(file_matches);
-}
-
-void ExpressionSearch::print_match(FileMatches fm)
-{
-
-  for (auto const &ent : fm)
-  {
-    std::cout << "\033[1;31mResults for File: \033[0m"
-      << ent.first
-      << std::endl;
-
-    for (auto m : ent.second)
-    {
-      std::cout << "\033[1;31mFound a match on line: \033[0m"
-        << m.line_number
-        << std::endl;
-
-      std::cout << "\033[1;32mMatching expression: \033[0m"
-        << m.expression
-        << std::endl;
-
-      for (auto line : m.context.lines)
-      {
-        std::cout << line
-          << std::endl;
-      }
-
-      std::cout << std::endl;
-
-      std::cout << "\033[1;33mLine contents are: \033[0m"
-        << m.match
-        << "\n"
-        << std::endl;
-
-      std::cout << std::endl;
-    }
-  }
+  FileMatches fm = FileMatches(file_matches);
+  return fm;
 }
