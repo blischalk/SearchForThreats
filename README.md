@@ -9,7 +9,7 @@ language.
 ## Note
 
 This tool is simply scanning files for regular expression matches. It is not
-following code paths to determine if user proceeds without any sanitization.
+following code paths to determine if user input proceeds without any sanitization.
 This tool does not try to be smart but rather to identify the areas of the
 codebase where manual review may be beneficial.
 
