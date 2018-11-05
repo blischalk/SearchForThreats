@@ -2,7 +2,7 @@ CC=g++
 LIBS=-lyaml-cpp -lboost_system -lboost_filesystem
 CFLAGS=-Wall -std=c++11 -fexceptions -std=c++11
 INC=-I/usr/include -I/usr/lib
-OBJECTS=main.o yaml_config.o expression_search.o match_context.o match.o file_matches.o
+OBJECTS=main.o yaml_config.o expression_search.o match_context.o match.o file_matches.o interaction.o match_candidate.o
 BIN=sft
 OUTPUTDIR=Release
 

@@ -11,6 +11,8 @@ class MatchContext
                  int line_number,
                  int preroll,
                  int postroll);
+    int start;
+    int end;
   private:
     std::vector<std::string> mem_file;
     int line_number;

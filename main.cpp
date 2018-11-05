@@ -1,11 +1,16 @@
 #include <string>
 #include "cxxopts.hpp"
 #include "expression_search.hpp"
+#include "interaction.hpp"
 #include "file_matches.hpp"
 #include "yaml_config.hpp"
 
 const std::vector<std::string> supported_languages =
   {"ruby", "c", "cpp"};
+
+struct mode {
+  bool interactive = false;
+} mode;
 
 void option_validation(int argc, char* argv[])
 {
@@ -13,7 +18,8 @@ void option_validation(int argc, char* argv[])
       "Look for threats in an application");
 
   options.add_options()
-    ("h,help", "Show help") ;
+    ("i,interactive", "Interactive Mode")
+    ("h,help", "Show Help") ;
 
   auto result = options.parse(argc, argv);
 
@@ -32,6 +38,12 @@ void option_validation(int argc, char* argv[])
       << std::endl;
     exit(1);
   }
+
+  if (result.count("interactive"))
+  {
+    std::cout << "Interactive mode selected." << std::endl;
+    mode.interactive = true;
+  }
 }
 
 std::vector<std::string> config_expressions(std::string language)
@@ -49,7 +61,6 @@ int main(int argc, char* argv[])
 
   std::string start_dir = argv[1];
   std::string language  = argv[2];
-
   std::vector<std::string> expressions;
   expressions = config_expressions(language);
 
@@ -57,9 +68,19 @@ int main(int argc, char* argv[])
   {
     ExpressionSearch es = ExpressionSearch(start_dir, language, expressions);
     FileMatches fm = es.search();
-    fm.print();
-    fm.print_to_csv();
+
+    if (mode.interactive)
+    {
+      Interaction i = Interaction(fm);
+      i.start();
+    } else {
+      std::cout << "Results of expression searching: " << std::endl;
+      fm.print();
+      std::cout << "Sending results to CSV file." << std::endl;
+      fm.print_to_csv();
+    }
   }
+
 
   return 0;
 }

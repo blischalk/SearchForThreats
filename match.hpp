@@ -7,12 +7,15 @@
 class Match
 {
   public:
+    std::string file_name;
     int line_number;
     std::string expression;
     std::string match;
     MatchContext context;
+    void print(void);
 
-    Match(int line_number,
+    Match(std::string file_name,
+        int line_number,
         std::string expression,
         std::string match,
         MatchContext context);

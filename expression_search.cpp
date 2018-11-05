@@ -79,7 +79,7 @@ FileMatches ExpressionSearch::search()
               bool match = regex_search(mem_file.at(line_number), e);
               if (match) {
                 MatchContext c = MatchContext(mem_file, line_number, 3, 3);
-                Match m   = Match(line_number, expressions[i], mem_file.at(line_number), c);
+                Match m   = Match(file_name, line_number, expressions[i], mem_file.at(line_number), c);
                 file_matches[file_name].push_back(m);
               }
             }

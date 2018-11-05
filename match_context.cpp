@@ -13,13 +13,14 @@ MatchContext::MatchContext(std::vector<std::string> mem_file,
       std::size_t length = mem_file.size();
       int proposed_start = line_number - preroll;
       int proposed_end   = line_number + postroll;
-      int start          = proposed_start < 0 ? 0 : proposed_start;
-      int end            = proposed_end > (int)(length - 1) ? (int)(length - 1) : proposed_end;
+      start          = proposed_start < 0 ? 0 : proposed_start;
+      end            = proposed_end > (int)(length - 1) ? (int)(length - 1) : proposed_end;
+      int tmp_start = start;
 
-      while (start <= end)
+      while (tmp_start <= end)
       {
-        lines.push_back(mem_file.at(start));
-        start++;
+        lines.push_back(mem_file.at(tmp_start));
+        tmp_start++;
       }
     
     };

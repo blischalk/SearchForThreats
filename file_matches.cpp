@@ -7,37 +7,15 @@
 
 FileMatches::FileMatches(std::map<std::string, std::vector<Match>> file_matches) : file_matches(file_matches) {};
 
+const std::string DEFAULT_CSV_FILENAME = "report.csv";
+
 void FileMatches::print(void)
 {
   for (auto const &ent : file_matches)
   {
-    std::cout << "\033[1;31mResults for File: \033[0m"
-      << ent.first
-      << std::endl;
-
     for (auto m : ent.second)
     {
-      std::cout << "\033[1;31mFound a match on line: \033[0m"
-        << m.line_number
-        << std::endl;
-
-      std::cout << "\033[1;32mMatching expression: \033[0m"
-        << m.expression
-        << std::endl;
-
-      for (auto line : m.context.lines)
-      {
-        std::cout << line
-          << std::endl;
-      }
-
-      std::cout << std::endl;
-
-      std::cout << "\033[1;33mLine contents are: \033[0m"
-        << m.match
-        << "\n"
-        << std::endl;
-
+      m.print();
       std::cout << std::endl;
     }
   }
@@ -46,7 +24,7 @@ void FileMatches::print(void)
 void FileMatches::print_to_csv(void)
 {
   std::ofstream myfile;
-  myfile.open("report.csv");
+  myfile.open(DEFAULT_CSV_FILENAME);
 
   myfile << "Source File, Detected Expression, Line Number, Line Contents, In Context,\n";
   for (auto const &ent : file_matches)
