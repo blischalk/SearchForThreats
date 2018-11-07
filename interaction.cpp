@@ -29,51 +29,69 @@ void Interaction::print_match_menu(void)
   std::cout << "(s) - Skip finding" << std::endl;
 }
 
-void Interaction::start(void)
+FileMatches Interaction::review_matches(void)
+{
+  bool run = true;
+  char user_selection;
+
+  for (auto &mc : match_candidates)
+  {
+    if (!run)
+    {
+      break;
+    }
+
+    mc.match.print();
+
+    std::cout << "What would you like to do? (press q to quit)"
+      << std::endl;
+    print_match_menu();
+
+    user_selection = std::cin.get();
+
+    switch (user_selection)
+    {
+      case 'm':
+        std::cout << "Marking!" << std::endl;
+        mc.mark();
+        std::cout << "Marked is: " << mc.marked() << std::endl;
+        break;
+      case 's':
+        std::cout << "Skipping!" << std::endl;
+        break;
+      case 'q':
+        run = false;
+        break;
+      default:
+        break;
+    }
+    std::cin.get();
+  }
+
+  std::map<std::string, std::vector<Match>> file_matches;
+  for(auto mc : match_candidates)
+  {
+    if (mc.marked())
+    {
+      if (file_matches.find(mc.match.file_name) == file_matches.end())
+      {
+        std::vector<Match> file_match_collection;
+        file_matches[mc.match.file_name] = file_match_collection;
+      }
+
+      file_matches[mc.match.file_name].push_back(mc.match);
+    }
+  }
+  FileMatches fm = FileMatches(file_matches);
+  return fm;
+}
+
+FileMatches Interaction::start(void)
 {
   std::cout << "Welcome to interactive SFT!"
     << std::endl;
 
-  bool run = true;
-  char user_selection;
+  return review_matches();
 
-  while (run) {
-    for (auto mc : match_candidates)
-    {
-      if (!run)
-      {
-        break;
-      }
-
-      mc.match.print();
-
-      std::cout << "What would you like to do? (press q to quit)"
-        << std::endl;
-      print_match_menu();
-
-      user_selection = std::cin.get();
-
-      switch (user_selection)
-      {
-        case 'm':
-          std::cout << "Marking!" << std::endl;
-          mc.marked = true;
-          break;
-        case 's':
-          std::cout << "Skipping!" << std::endl;
-          break;
-        case 'q':
-          run = false;
-          break;
-        default:
-          break;
-      }
-      std::cin.get();
-    }
-    run = false;
-  }
-
-  std::cout << "Good bye!"
-    << std::endl;
 }
 

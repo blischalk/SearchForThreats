@@ -8,7 +8,8 @@ class Interaction
   public:
     Interaction(FileMatches file_matches);
     void print_match_menu(void);
-    void start(void);
+    FileMatches start(void);
+    FileMatches review_matches(void);
   private:
     std::vector<MatchCandidate> match_candidates;
     void flatten_matches(FileMatches file_matches);

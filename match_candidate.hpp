@@ -7,10 +7,13 @@
 #include "match_candidate.hpp"
 class MatchCandidate
 {
+  private:
+    bool _marked = false;
   public:
     Match match;
-    bool marked = false;
     MatchCandidate(Match match);
+    void mark(void);
+    bool marked(void);
 };
 
 #endif

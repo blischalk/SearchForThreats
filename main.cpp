@@ -72,13 +72,13 @@ int main(int argc, char* argv[])
     if (mode.interactive)
     {
       Interaction i = Interaction(fm);
-      i.start();
-    } else {
-      std::cout << "Results of expression searching: " << std::endl;
-      fm.print();
-      std::cout << "Sending results to CSV file." << std::endl;
-      fm.print_to_csv();
+      fm = i.start();
     }
+
+    std::cout << "Results of expression searching: " << std::endl;
+    fm.print();
+    std::cout << "Sending results to CSV file." << std::endl;
+    fm.print_to_csv();
   }
 
 
