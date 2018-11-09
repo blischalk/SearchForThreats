@@ -41,12 +41,12 @@ FileMatches Interaction::review_matches(void)
       break;
     }
 
+retry:
     mc.match.print();
 
     std::cout << "What would you like to do? (press q to quit)"
       << std::endl;
     print_match_menu();
-
     user_selection = std::cin.get();
 
     switch (user_selection)
@@ -63,6 +63,8 @@ FileMatches Interaction::review_matches(void)
         run = false;
         break;
       default:
+        std::cout << "Please make a valid selection " << std::endl;
+        goto retry;
         break;
     }
     std::cin.get();
