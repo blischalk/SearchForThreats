@@ -2,3 +2,5 @@ obj/
 bin/
 *.csv
 .~lock*
+.gdb_history
+peda-session-sft.txt
