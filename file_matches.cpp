@@ -7,8 +7,6 @@
 
 FileMatches::FileMatches(std::map<std::string, std::vector<Match>> file_matches) : file_matches(file_matches) {};
 
-const std::string DEFAULT_CSV_FILENAME = "report.csv";
-
 void FileMatches::print(void)
 {
   for (auto const &ent : file_matches)
@@ -21,10 +19,10 @@ void FileMatches::print(void)
   }
 }
 
-void FileMatches::print_to_csv(void)
+void FileMatches::print_to_csv(std::string output_filename)
 {
   std::ofstream myfile;
-  myfile.open(DEFAULT_CSV_FILENAME);
+  myfile.open(output_filename);
 
   myfile << "Source File, Detected Expression, Line Number, Line Contents, In Context,\n";
   for (auto const &ent : file_matches)

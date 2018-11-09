@@ -4,3 +4,4 @@ bin/
 .~lock*
 .gdb_history
 peda-session-sft.txt
+sft_report

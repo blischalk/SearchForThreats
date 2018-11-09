@@ -10,6 +10,8 @@ const std::vector<std::string> supported_languages =
 
 struct mode {
   bool interactive = false;
+  std::string output_filename;
+  std::string format;
 } mode;
 
 void option_validation(int argc, char* argv[])
@@ -18,6 +20,8 @@ void option_validation(int argc, char* argv[])
       "Look for threats in an application");
 
   options.add_options()
+    ("f,format", "Output file format: (only csv currently supported)", cxxopts::value<std::string>()->default_value("csv"))
+    ("o,output", "Output filename", cxxopts::value<std::string>()->default_value("sft_report"))
     ("i,interactive", "Interactive Mode")
     ("h,help", "Show Help") ;
 
@@ -44,6 +48,18 @@ void option_validation(int argc, char* argv[])
     std::cout << "Interactive mode selected." << std::endl;
     mode.interactive = true;
   }
+
+  if (result.count("output"))
+  {
+    std::string output_filename;
+    mode.output_filename = output_filename = result["output"].as<std::string>();
+    std::cout << "Writing output to file: " << output_filename << std::endl;
+
+    std::string format;
+    mode.format = format = result["format"].as<std::string>();
+    std::cout << "Formatting output as: " << format << std::endl;
+  }
+
 }
 
 std::vector<std::string> config_expressions(std::string language)
@@ -77,8 +93,9 @@ int main(int argc, char* argv[])
 
     std::cout << "Results of expression searching: " << std::endl;
     fm.print();
+    
     std::cout << "Sending results to CSV file." << std::endl;
-    fm.print_to_csv();
+    fm.print_to_csv(mode.output_filename);
   }
 
 
