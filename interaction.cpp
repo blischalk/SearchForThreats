@@ -25,14 +25,44 @@ void Interaction::flatten_matches(FileMatches file_matches)
 
 void Interaction::print_match_menu(void)
 {
+  std::cout << "(i) - Ignore finding in future review" << std::endl;
   std::cout << "(m) - Mark finding for review" << std::endl;
   std::cout << "(s) - Skip finding" << std::endl;
+}
+
+void Interaction::init_ignore(void)
+{
+  const std::string default_ignore_filename = ".sft_ignore";
+  std::cout << "Use " << default_ignore_filename << " (y or n)?" << std::endl;
+  char user_selection;
+  user_selection = std::cin.get();
+  std::string ignore_filename;
+
+retry:
+  switch (user_selection)
+  {
+    case 'y':
+      std::cout << "Using " << default_ignore_filename << std::endl;;
+      ignore_filename = default_ignore_filename;
+      break;
+    case 'n':
+      std::cout << "Enter file name: " << std::endl;
+      std::cin >> ignore_filename;
+      break;
+    default:
+      std::cout << "Please make a valid selection " << std::endl;
+      goto retry;
+      break;
+  }
+  std::cin.get();
 }
 
 FileMatches Interaction::review_matches(void)
 {
   bool run = true;
   char user_selection;
+
+  init_ignore();
 
   for (auto &mc : match_candidates)
   {

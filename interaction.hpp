@@ -13,6 +13,7 @@ class Interaction
   private:
     std::vector<MatchCandidate> match_candidates;
     void flatten_matches(FileMatches file_matches);
+    void init_ignore(void);
 };
 
 #endif
