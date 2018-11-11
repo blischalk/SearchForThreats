@@ -2,7 +2,7 @@
 #include "yaml-cpp/yaml.h"
 
 namespace YamlConfig {
-  const std::string DEFAULT_CONFIG = "config.yaml";
+  const std::string DEFAULT_CONFIG = "~/sft_config.yaml";
   class Config
   {
   public:

@@ -17,10 +17,15 @@ codebase where manual review may be beneficial.
 
 - (x) Show context in match output - Implemented
 - (x) Report to CSV - Implemented
+- Prompt how many files will be searched before searching
 - Ignore file
+- Ignore backticks in string
+- Progress bar
+- Match count / current match
+- Ignore commented lines
 - Vulnerability type search
 - Interactive mode
   - Mark as ignore
     - Store hash of line and un-ignore when line changes
-  - Mark as issue
+  - Mark fore review
   - Add note
