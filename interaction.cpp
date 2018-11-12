@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "file_matches.hpp"
+#include "ignore_file.hpp"
 #include "interaction.hpp"
 #include "match.hpp"
 #include "match_candidate.hpp"
@@ -30,39 +31,12 @@ void Interaction::print_match_menu(void)
   std::cout << "(s) - Skip finding" << std::endl;
 }
 
-void Interaction::init_ignore(void)
-{
-  const std::string default_ignore_filename = ".sft_ignore";
-  std::cout << "Use " << default_ignore_filename << " (y or n)?" << std::endl;
-  char user_selection;
-  user_selection = std::cin.get();
-  std::string ignore_filename;
-
-retry:
-  switch (user_selection)
-  {
-    case 'y':
-      std::cout << "Using " << default_ignore_filename << std::endl;;
-      ignore_filename = default_ignore_filename;
-      break;
-    case 'n':
-      std::cout << "Enter file name: " << std::endl;
-      std::cin >> ignore_filename;
-      break;
-    default:
-      std::cout << "Please make a valid selection " << std::endl;
-      goto retry;
-      break;
-  }
-  std::cin.get();
-}
-
 FileMatches Interaction::review_matches(void)
 {
   bool run = true;
   char user_selection;
 
-  init_ignore();
+  IgnoreFile ignore_f = IgnoreFile();
 
   for (auto &mc : match_candidates)
   {

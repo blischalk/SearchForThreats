@@ -65,7 +65,7 @@ void option_validation(int argc, char* argv[])
 std::vector<std::string> config_expressions(std::string language)
 {
   std::vector<std::string> expressions;
-  YamlConfig::Config cfg = YamlConfig::Config(YamlConfig::DEFAULT_CONFIG);
+  YamlConfig::Config cfg = YamlConfig::Config(YamlConfig::Config::config_path());
   expressions = cfg.lookup_expressions_for(language);
   return expressions;
 }
