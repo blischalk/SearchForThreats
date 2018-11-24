@@ -94,7 +94,7 @@ FileMatches ExpressionSearch::search()
   }
 
   int processor_count = 4;
-  int size            = file_names.size();
+  unsigned int size   = file_names.size();
   int group_size      = size / processor_count;
   int remainder       = size % processor_count;
   std::vector<std::thread> threadList;
@@ -105,8 +105,6 @@ FileMatches ExpressionSearch::search()
   {
     for (int i=0; i < processor_count; i++)
     {
-      std::cout << "group_size is: " << group_size << std::endl;
-      std::cout << "remainder is: " << remainder << std::endl;
       unsigned char begin_offset = i;
       unsigned char end_offset   = i + group_size;
       if (i == (processor_count - 1) && remainder > 0)

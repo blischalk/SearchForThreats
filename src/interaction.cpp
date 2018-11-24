@@ -63,6 +63,11 @@ retry:
       case 's':
         std::cout << "Skipping!" << std::endl;
         break;
+      case 'i':
+        std::cout << "Ignore match:" << std::endl;
+        mc.ignore();
+        ignore_f.ignore(mc);
+        break;
       case 'q':
         run = false;
         break;

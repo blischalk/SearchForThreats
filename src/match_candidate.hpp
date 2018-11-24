@@ -8,10 +8,13 @@
 class MatchCandidate
 {
   private:
-    bool _marked = false;
+    bool _marked  = false;
+    bool _ignored = false;
   public:
     Match match;
     MatchCandidate(Match match);
+    void ignore(void);
+    bool ignored(void);
     void mark(void);
     bool marked(void);
 };

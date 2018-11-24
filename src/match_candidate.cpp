@@ -14,3 +14,13 @@ bool MatchCandidate::marked(void)
 {
   return _marked;
 }
+
+void MatchCandidate::ignore(void)
+{
+  _ignored = true;
+}
+
+bool MatchCandidate::ignored(void)
+{
+  return _ignored;
+}

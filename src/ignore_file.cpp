@@ -1,8 +1,12 @@
+#include <cryptopp/sha.h>
+#include <cryptopp/filters.h>
+#include <cryptopp/hex.h>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <sys/stat.h>
 #include "ignore_file.hpp"
+#include "match_candidate.hpp"
 #include "yaml-cpp/yaml.h"
 
 IgnoreFile::IgnoreFile()
@@ -11,17 +15,21 @@ IgnoreFile::IgnoreFile()
   std::cout << "Use " << default_ignore_filename << " (y or n)?" << std::endl;
   char user_selection;
   user_selection = std::cin.get();
+  const std::string home = getenv("HOME");
+  _ignore_filename = home + "/";
+  std::string tmp;
 
 retry:
   switch (user_selection)
   {
     case 'y':
       std::cout << "Using " << default_ignore_filename << std::endl;;
-      _ignore_filename = default_ignore_filename;
+      _ignore_filename.append(default_ignore_filename);
       break;
     case 'n':
       std::cout << "Enter file name: " << std::endl;
-      std::cin >> _ignore_filename;
+      std::cin >> tmp;
+      _ignore_filename.append(tmp);
       break;
     default:
       std::cout << "Please make a valid selection " << std::endl;
@@ -48,3 +56,24 @@ void IgnoreFile::load_or_create(void)
   }
 }
 
+void IgnoreFile::ignore(MatchCandidate mc)
+{
+  CryptoPP::SHA1 sha1;
+  std::string source = mc.match.file_name + std::to_string(mc.match.line_number) + mc.match.expression + mc.match.match;  //This will be randomly generated somehow
+  std::string hash = "";
+  CryptoPP::StringSource(source, true, new CryptoPP::HashFilter(sha1, new CryptoPP::HexEncoder(new CryptoPP::StringSink(hash))));
+
+  std::cout << "The hash is: " << hash << std::endl;
+
+  //YAML::Emitter out;
+  //out << YAML::BeginMap;
+  //out << YAML::Key << "File Name: ";
+  //out << YAML::Value << mc.match.file_name;
+  //out << YAML::Key << "Line Number: ";
+  //out << YAML::Value << mc.match.line_number;
+  //out << YAML::Key << "Expression: ";
+  //out << YAML::Value << mc.match.expression;
+  //out << YAML::Key << "Match: ";
+  //out << YAML::Value << mc.match.match;
+  //out << YAML::EndMap;
+}
