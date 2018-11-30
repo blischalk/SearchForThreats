@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <mutex>
 #include <regex>
 #include <string>
 #include <thread>
@@ -37,7 +38,7 @@ bool ExpressionSearch::extension_for_lang(std::string lang,
   return false;
 }
 
-void ExpressionSearch::search_in_file(std::string file_name, std::map<std::string, std::vector<Match>> &file_matches)
+void ExpressionSearch::search_in_file(std::string file_name, std::map<std::string, std::vector<Match>> &file_matches, std::mutex &_lock)
 {
   std::ifstream file_text;
   std::string line;
@@ -76,7 +77,9 @@ void ExpressionSearch::search_in_file(std::string file_name, std::map<std::strin
         if (match) {
           MatchContext c = MatchContext(mem_file, line_number, 3, 3);
           Match m   = Match(file_name, line_number, expressions[i], mem_file.at(line_number), c);
+          _lock.lock();
           file_matches[file_name].push_back(m);
+          _lock.unlock();
         }
       }
     }
@@ -98,6 +101,7 @@ FileMatches ExpressionSearch::search()
   int group_size      = size / processor_count;
   int remainder       = size % processor_count;
   std::vector<std::thread> threadList;
+  std::mutex _lock;
 
   // Check that we have files to search
   // And that we have at least one per processor
@@ -120,7 +124,7 @@ FileMatches ExpressionSearch::search()
                       [&](std::string file_name)
         {
           std::cout << "Multi-thread search. Searching file: " << file_name << std::endl;
-          search_in_file(file_name, file_matches);
+          search_in_file(file_name, file_matches, _lock);
         });
       }));
     }
@@ -130,7 +134,7 @@ FileMatches ExpressionSearch::search()
   } else {
     std::for_each(file_names.begin(), file_names.end(), [&](std::string file_name)
     {
-      search_in_file(file_name, file_matches);
+      search_in_file(file_name, file_matches, _lock);
     });
   }
 

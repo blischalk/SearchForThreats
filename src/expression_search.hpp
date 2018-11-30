@@ -1,3 +1,4 @@
+#include <mutex>
 #include <string>
 #include "file_matches.hpp"
 #include "match.hpp"
@@ -13,7 +14,7 @@ public:
                    std::vector<std::string> expressions);
   bool extension_for_lang(std::string lang, std::string ext);
   FileMatches search(void);
-  void search_in_file(std::string file_name, std::map<std::string, std::vector<Match>> &file_matches);
+  void search_in_file(std::string file_name, std::map<std::string, std::vector<Match>> &file_matches, std::mutex &_lock);
 
 private:
   std::map<std::string, std::vector<std::string>> file_extensions =
