@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "match.hpp"
+#include "match_candidate.hpp"
 class FileMatches
 {
   public:
@@ -12,5 +13,6 @@ class FileMatches
     FileMatches(std::map<std::string, std::vector<Match>> file_matches);
     void print(void);
     void print_to_csv(std::string);
+    std::vector<MatchCandidate> flatten(void);
 };
 #endif

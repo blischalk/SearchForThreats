@@ -9,19 +9,7 @@
 
 Interaction::Interaction(FileMatches file_matches)
 {
-  flatten_matches(file_matches);
-}
-
-void Interaction::flatten_matches(FileMatches file_matches)
-{
-  for (auto const &ent : file_matches.file_matches)
-  {
-    for (auto m : ent.second)
-    {
-      MatchCandidate mc = MatchCandidate(m);
-      match_candidates.push_back(mc);
-    }
-  }
+  match_candidates = file_matches.flatten();
 }
 
 void Interaction::print_match_menu(void)
@@ -35,8 +23,6 @@ FileMatches Interaction::review_matches(void)
 {
   bool run = true;
   char user_selection;
-
-  IgnoreFile ignore_f = IgnoreFile();
 
   for (auto &mc : match_candidates)
   {
@@ -66,7 +52,6 @@ retry:
       case 'i':
         std::cout << "Ignore match:" << std::endl;
         mc.ignore();
-        ignore_f.ignore(mc);
         break;
       case 'q':
         run = false;
@@ -102,7 +87,11 @@ FileMatches Interaction::start(void)
   std::cout << "Welcome to interactive SFT!"
     << std::endl;
 
-  return review_matches();
+  IgnoreFile ignore_f;
+  FileMatches fm = review_matches();
+  ignore_f.write(match_candidates);
+
+  return fm;
 
 }
 

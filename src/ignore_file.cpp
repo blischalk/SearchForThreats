@@ -7,6 +7,7 @@
 #include <string>
 #include <sys/stat.h>
 #include "ignore_file.hpp"
+#include "match.hpp"
 #include "match_candidate.hpp"
 #include "yaml-cpp/yaml.h"
 
@@ -61,27 +62,41 @@ void IgnoreFile::load_or_create(void)
   _ignore_file = YAML::LoadFile(_ignore_filename);
 }
 
-void IgnoreFile::ignore(MatchCandidate mc)
+void IgnoreFile::write(std::vector<MatchCandidate> mcs)
 {
-  CryptoPP::SHA1 sha1;
-  std::string source = mc.match.file_name + std::to_string(mc.match.line_number) + mc.match.expression + mc.match.match;  //This will be randomly generated somehow
-  std::string hash = "";
-  CryptoPP::StringSource(source, true, new CryptoPP::HashFilter(sha1, new CryptoPP::HexEncoder(new CryptoPP::StringSink(hash))));
-
-  std::cout << "The hash is: " << hash << std::endl;
-
+  //std::vector<YAML::Emitter> emitters;
   YAML::Emitter out;
   out << YAML::BeginMap;
-  out << YAML::Key << "File Name: ";
-  out << YAML::Value << mc.match.file_name;
-  out << YAML::Key << "Line Number: ";
-  out << YAML::Value << mc.match.line_number;
-  out << YAML::Key << "Expression: ";
-  out << YAML::Value << mc.match.expression;
-  out << YAML::Key << "Match: ";
-  out << YAML::Value << mc.match.match;
-  out << YAML::Key << "Hash: ";
-  out << YAML::Value << hash;
+  out << YAML::Key << "ignores";
+  out << YAML::Value;
+  out << YAML::BeginSeq;
+
+  std::for_each(mcs.begin(), mcs.end(), [&](MatchCandidate mc){
+      if (mc.ignored() == true)
+      {
+        CryptoPP::SHA1 sha1;
+        std::string source = mc.match.file_name + std::to_string(mc.match.line_number) + mc.match.expression + mc.match.match;  //This will be randomly generated somehow
+        std::string hash = "";
+        CryptoPP::StringSource(source, true, new CryptoPP::HashFilter(sha1, new CryptoPP::HexEncoder(new CryptoPP::StringSink(hash))));
+
+        std::cout << "The hash is: " << hash << std::endl;
+
+        out << YAML::BeginMap;
+        out << YAML::Key << "file_name";
+        out << YAML::Value << mc.match.file_name;
+        out << YAML::Key << "line_number";
+        out << YAML::Value << mc.match.line_number;
+        out << YAML::Key << "expression";
+        out << YAML::Value << mc.match.expression;
+        out << YAML::Key << "match";
+        out << YAML::Value << mc.match.match;
+        out << YAML::Key << "hash";
+        out << YAML::Value << hash;
+        out << YAML::EndMap;
+      }
+  });
+
+  out << YAML::EndSeq;
   out << YAML::EndMap;
 
   std::ofstream fout(_ignore_filename);

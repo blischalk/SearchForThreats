@@ -47,3 +47,18 @@ void FileMatches::print_to_csv(std::string output_filename)
 
   myfile.close();
 }
+
+std::vector<MatchCandidate> FileMatches::flatten(void)
+{
+  std::vector<MatchCandidate> ms;
+  for (auto const &ent : file_matches)
+  {
+    for (auto m : ent.second)
+    {
+      MatchCandidate mc = MatchCandidate(m);
+      ms.push_back(mc);
+    }
+  }
+  return ms;
+}
+
