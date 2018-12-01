@@ -21,7 +21,7 @@ test: OUTPUTDIR=Test
 test: LIBS+= -lgtest
 test: BIN=test_runner
 test: 
-		$(CC) $(CFLAGS) $(INC) -o $(BINDIR) test/main.cpp $(addprefix obj/$(OUTPUTDIR)/,$(OBJECTS)) $(LIBS)
+	$(CC) $(CFLAGS) $(INC) -o $(BINDIR) test/main.cpp $(addprefix obj/$(OUTPUTDIR)/,$(OBJECTS)) $(LIBS)
 
 all: SRCDIR=src
 all: main.o
@@ -30,6 +30,6 @@ all: $(OBJECTS)
 	$(LIBS)
 
 %.o:
-		$(CC) $(CFLAGS) $(INC)\
-			-c $(subst .o,.cpp,$(addprefix $(SRCDIR)/,$@)) \
-			-o $(OBJDIR)/$@
+	$(CC) $(CFLAGS) $(INC)\
+		-c $(subst .o,.cpp,$(addprefix $(SRCDIR)/,$@)) \
+		-o $(OBJDIR)/$@
