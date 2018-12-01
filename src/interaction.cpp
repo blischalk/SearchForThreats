@@ -19,7 +19,30 @@ void Interaction::print_match_menu(void)
   std::cout << "(s) - Skip finding" << std::endl;
 }
 
-FileMatches Interaction::review_matches(void)
+bool Interaction::should_ignore_prev(void)
+{
+  std::cout << "Ignore previously ignored matches? (y or n)" << std::endl;
+  char user_selection;
+
+  retry:
+  user_selection = std::cin.get();
+
+  switch (user_selection)
+    {
+    case 'y':
+      return true;
+    case 'n':
+      return false;
+    default:
+      std::cout << "Please make a valid selection " << std::endl;
+      goto retry;
+      break;
+    }
+  std::cin.get();
+}
+
+FileMatches Interaction::review_matches(IgnoreFile ignore_f,
+                                        const bool ignore_prev)
 {
   bool run = true;
   char user_selection;
@@ -88,10 +111,10 @@ FileMatches Interaction::start(void)
     << std::endl;
 
   IgnoreFile ignore_f;
-  FileMatches fm = review_matches();
+  bool ignore_prev = should_ignore_prev();
+  FileMatches fm = review_matches(ignore_f, ignore_prev);
   ignore_f.write(match_candidates);
 
   return fm;
 
 }
-
