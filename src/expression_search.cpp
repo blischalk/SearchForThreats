@@ -97,7 +97,7 @@ FileMatches ExpressionSearch::search()
   }
 
   int processor_count = 4;
-  unsigned int size   = file_names.size();
+  int size   = file_names.size();
   int group_size      = size / processor_count;
   int remainder       = size % processor_count;
   std::vector<std::thread> threadList;
@@ -107,26 +107,41 @@ FileMatches ExpressionSearch::search()
   // And that we have at least one per processor
   if (size > 0 && group_size > 0)
   {
+    int begin_offset = 0;
+    int end_offset   = group_size;
+
+    // std::for_each((file_names.begin()),
+    //               (file_names.end()),
+    //               [&](std::string file_name)
+    // {
+    //   std::cout << "Filename is: " << file_name << std::endl;
+    // });
+
     for (int i=0; i < processor_count; i++)
     {
-      unsigned char begin_offset = i;
-      unsigned char end_offset   = i + group_size;
       if (i == (processor_count - 1) && remainder > 0)
       {
-        end_offset = end_offset + remainder;
+        end_offset += remainder;
       }
 
-      threadList.push_back(std::thread([&]()
-      {
+      // std::cout << "file_names.size(): " << size << std::endl;
+      // std::cout << "begin_offset: " << begin_offset << std::endl;
+      // std::cout << "end_offset: " << end_offset << std::endl;
 
-        std::for_each(file_names.begin() + begin_offset,
-                      file_names.begin() + end_offset,
-                      [&](std::string file_name)
+
+      threadList.push_back(std::thread([=,&_lock,&file_matches]()
+      {
+        for(int y=begin_offset; y < end_offset; y++)
         {
-          std::cout << "Multi-thread search. Searching file: " << file_name << std::endl;
-          search_in_file(file_name, file_matches, _lock);
-        });
+          // std::cout << "Multi-thread search. Searching file: " << file_names.at(y) << std::endl;
+          // std::cout << "begin_offset: " << begin_offset << std::endl;
+          // std::cout << "end_offset: " << end_offset << std::endl;
+          search_in_file(file_names.at(y), file_matches, _lock);
+        }
       }));
+
+      begin_offset += group_size;
+      end_offset += group_size;
     }
 
     std::cout << "Blocking on search completion" << std::endl;

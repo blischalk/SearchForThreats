@@ -23,6 +23,7 @@ bool Interaction::should_ignore_prev(void)
 {
   std::cout << "Ignore previously ignored matches? (y or n)" << std::endl;
   char user_selection;
+  bool response = true;
 
   retry:
   user_selection = std::cin.get();
@@ -30,15 +31,18 @@ bool Interaction::should_ignore_prev(void)
   switch (user_selection)
     {
     case 'y':
-      return true;
+      response = true;
+      break;
     case 'n':
-      return false;
+      response = false;
+      break;
     default:
       std::cout << "Please make a valid selection " << std::endl;
       goto retry;
       break;
     }
   std::cin.get();
+  return response;
 }
 
 FileMatches Interaction::review_matches(IgnoreFile ignore_f,
