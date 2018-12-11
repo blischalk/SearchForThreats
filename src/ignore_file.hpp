@@ -9,6 +9,7 @@ class IgnoreFile
   public:
     IgnoreFile();
     void write(std::vector<MatchCandidate>);
+    std::vector<std::string> hashes(void);
   private:
     YAML::Node _ignore_file;
     std::string _ignore_filename;

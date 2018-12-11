@@ -1,3 +1,6 @@
+#include <cryptopp/sha.h>
+#include <cryptopp/filters.h>
+#include <cryptopp/hex.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -13,7 +16,24 @@ Match::Match(std::string file_name,
     line_number(line_number),
     expression(expression),
     match(match),
-    context(context) {};
+    context(context)
+{
+  hash = calculate_hash(file_name, line_number, expression, match);
+};
+
+std::string Match::calculate_hash(std::string file_name,
+                                  int line_number,
+                                  std::string expression,
+                                  std::string match)
+{
+  CryptoPP::SHA1 sha1;
+  std::string source = file_name + std::to_string(line_number) + expression + match;  //This will be randomly generated somehow
+  std::string hash = "";
+  CryptoPP::StringSource(source, true, new CryptoPP::HashFilter(sha1, new CryptoPP::HexEncoder(new CryptoPP::StringSink(hash))));
+
+  std::cout << "The hash is: " << hash << std::endl;
+  return hash;
+}
 
 void Match::print(void)
 {

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <climits>
 #include <iostream>
 #include <string>
@@ -50,13 +51,23 @@ FileMatches Interaction::review_matches(IgnoreFile ignore_f,
 {
   bool run = true;
   char user_selection;
+  std::vector<std::string> prev_ignore_hashes = ignore_f.hashes();
 
   for (auto &mc : match_candidates)
   {
     if (!run)
-    {
-      break;
-    }
+      {
+        break;
+      }
+
+    if (ignore_prev && std::any_of(prev_ignore_hashes.begin(),
+                                   prev_ignore_hashes.end(),
+                                   [=](std::string h) {
+                                     return h == mc.match.hash;
+                                   }))
+      {
+        continue;
+      }
 
 retry:
     mc.match.print();
